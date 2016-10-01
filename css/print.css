@@ -1,0 +1,16 @@
+article, aside, dialog, figure, footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	font: 18px/22px "athelas-1", "athelas-2", serif;
+	text-align: justify;
+	text-rendering: optimizeLegibility;
+	background: #ffffff;
+	color: #000000;
+}
+pre, tt, code {
+	font: 18px/22px "adaptive-mono-1", "adaptive-mono-2", monospace;
+}
+#elsewhere, #meta, header, .share {
+	display: none;
+}

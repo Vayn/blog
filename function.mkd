@@ -1,0 +1,65 @@
+---
+layout: default
+title: Function
+---
+
+[mime_content_type](http://php.net/manual/en/function.mime-content-type.php) - Detect MIME Content-type for a file (deprecated)
+
+[soundex](http://www.php.net/manual/en/function.soundex.php) - Calculate the soundex key of a string
+
+[metaphone](http://www.php.net/manual/en/function.metaphone.php) - Calculate the metaphone key of a string
+
+[levenshtein](http://www.php.net/manual/en/function.levenshtein.php) - Calculate Levenshtein distance between two strings
+
+[similar_text](http://www.php.net/manual/en/function.similar-text.php) - Calculate the similarity between two strings
+
+[setlocale](http://www.php.net/manual/en/function.setlocale.php) - Set locale information
+
+[一些被忽视的 PHP 函数](http://www.gracecode.com/archives/3013/) - 很多没见过的函数
+
+[getimagesize](http://php.net/manual/en/function.getimagesize.php) - Get the size of an image
+
+[fpassthru](http://php.net/manual/en/function.fpassthru.php) - Output all remaining data on a file pointer
+
+[Alternative syntax for control structures](http://php.net/manual/en/control-structures.alternative-syntax.php) - PHP offers an alternative syntax for some of its control structures; namely, if, while, for, foreach, and switch. In each case, the basic form of the alternate syntax is to change the opening brace to a colon (:) and the closing brace to endif;, endwhile;, endfor;, endforeach;, or endswitch;, respectively.
+
+[ucwords](http://php.net/manual/en/function.ucwords.php) - Returns a string with the first character of each word in str capitalized, if that character is alphabetic.
+
+[pcntl_fork](http://php.net/manual/en/function.pcntl-fork.php) - Forks the currently running process.
+
+[strpbrk](http://php.net/manual/en/function.strpbrk.php) - Search a string for any of a set of characters. 从一个字符串找出符合另一个字符串符合的部分，将其以及之后剩余的部分返回。
+
+[strspn](http://www.php.net/manual/en/function.strspn.php) - Finds the length of the first segment of a string consisting entirely of characters contained within a given mask. 返回在字符串中包含的特定字符的数目。
+
+This function is significantly faster for checking illegal characters than the equivalent `preg_match()` method.
+
+[strcspn](http://php.net/manual/en/function.strcspn.php) - Find length of initial segment not matching mask. 返回在找到任何指定的字符之前，在字符串查找的字符数。
+
+[str_split](http://php.net/manual/en/function.str-split.php) - Convert a string to an array.
+
+[str_word_count](http://php.net/manual/en/function.str-word-count.php) - Return information about words used in a string.
+
+[setcookie](http://php.net/manual/en/function.setcookie.php) - Send a cookie.
+
+[$_COOKIE](http://php.net/manual/en/reserved.variables.cookies.php) - An associative array of variables passed to the current script via HTTP Cookies.
+
+[assert](http://php.net/manual/en/function.assert.php) - assert() will check the given assertion and take appropriate action if its result is FALSE.
+
+[lcg_value](http://php.net/manual/en/function.lcg-value.php) - Combined linear congruential generator. `lcg_value()` returns a pseudo random number in the range of (0, 1).
+
+[getmypid](http://php.net/manual/en/function.getmypid.php) - Gets PHP's process ID.
+
+[strtr](http://php.net/manual/en/function.strtr.php) - Translate characters or replace substrings.
+
+[readdir](http://php.net/manual/en/function.readdir.php) - Returns the filename of the next file from the directory. The filenames are returned in the order in which they are stored by the filesystem.
+
+[get_cfg_var](http://php.net/manual/en/function.get-cfg-var.php) - Gets the value of a PHP configuration option. _`get_cfg_var`_ returns the value from php.ini directly, while the _`ini_get`_ returns the runtime config value.
+
+[pathinfo](http://php.net/manual/en/function.pathinfo.php) - returns an associative array containing information about _path_.
+
+[parse_str](http://php.net/manual/en/function.parse-str.php) - Parses _str_ as if it were the query string passed via a URL and sets variables in the current scope. 
+
+[error_log](http://php.net/manual/en/function.error-log.php) - Sends an error message to the web server's error log or to a file. 
+
+[session_save_handler](http://php.net/session_set_save_handler) - `session_set_save_handler()` sets the user-level session storage functions which are used for storing and retrieving data associated with a session. This is most useful when a storage method other than those supplied by PHP sessions is preferred. i.e. Storing the session data in a local database. 
+

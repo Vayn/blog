@@ -1,0 +1,29 @@
+---
+layout: post
+title: '{JxLab} Sudo Robot'
+author: Vayn
+date: 2011-04-3
+categories:
+  -  DIY
+  -  python
+---
+
+[Sudo Robot][1] 是构建在 [Google App Engine][2] 上的一个机器人程序，添加 `SudoRobot@appspot.com` 到你的 Gtalk 或其它支持 XMPP 协议的聊天软件之后，就可以和 [Sudo Robot] 对话了。
+
+[<img src="/images/archive/2011/sudorobot/sudorobot.png" alt="Sudo Robot" style="border:none;"/>][1]
+
+[Sudo Robot] 能够为你提供最新的天气情况，还可以推送包括 Pinboard, Solidot 等站点的最新新闻。
+
+经过初步整理，我现在把 Sudo Robot 的源码开放出来，这样大家就可以搭建自己的机器人了。你打开 Sudo Robot 的网站 [http://bot.vayn.de/][1]，可以看到左上角有个 __Fork me on Github__ 的标签，点击就可进入 Sudo Robot 在 Github 上的仓库。
+
+Sudo Robot 是我接触 App Engine 的第一支程序，因此可能会有很多问题和需要改进的地方，欢迎在文章下方留言，或者 follow 我的 Twitter 账号 [@vayn][3]。
+
+---
+
+Sudo Robot 是自由软件，你可以在遵守 Sudo Robot 授权的情况下使用、修改、重新分发 Sudo Robot 的源码。
+
+[1]:http://bot.vayn.de/
+[2]:http://code.google.com/appengine/
+[3]:http://twitter.com/vayn
+
+EOF

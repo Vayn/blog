@@ -1,0 +1,32 @@
+---
+layout: post
+title: '{JxLab} Vim Documentation Chinese Version eBook'
+author: Vayn
+date: 2011-03-15
+categories:
+  -  vim
+  -  DIY
+  -  pdf
+  -  mobi
+  -  kindle
+---
+
+“吾辈之内领悟此书者，非英雄即枭雄。”——佚名
+
+Vim 里秘藏了太多的黑魔法，要想掌握这些魔法没有一本称手的 Vim 魔法指南是不行的。在众多指南里最权威的莫过于 [Vim Documentation](http://vimdoc.sourceforge.net)（以下简称 Vimdoc），正所谓“One doc to rule them all”是也。感谢中文 Vim 用户里的先行者将 Vimdoc 译成中文的 [Vimcdoc](http://vimdoc.sourceforge.net)，有了Vimcdoc 就能更好的学习 Vim 的魔法了:p
+
+不过 Vimcdoc 网站上只有安装版 Vimcdoc 和一个过于老旧的 PDF 版电子书，虽然说可以随时用 :h 在 Vim 里查阅文档，但如果能在平时没事儿时读读就更好了，所以我从 Vimcdoc 的网站上抓取全部在线文档。当然也可以用工具把本地文档转换成 HTML 文档，但是我比较懒因此就直接用现成的了。然后花了点时间把在线文档转成了电子书的形式。
+
+现在有 3 个版本：
+
+[vimcdoc_1_8_toc.tar.xz](http://u.115.com/file/t2c425e197)——这个是彩色带目录 PDF 版，文内所有链接可点。
+
+[vimcdoc_1_8.tar.xz](http://u.115.com/file/t291383096)——这个包内含两个文档，分别是无格式 PDF 版和纯文本版，比彩色的小很多。
+
+[vimcdoc_1_8_mobi.tar.xz](http://u.115.com/file/t2f6363722)——这个是 Kindle 用的 mobi 格式 Vimcdoc。
+
+限于 Vayn 的水平，后面两个版本都是没目录的。请选择自己喜欢的版本下载，如果有任何问题欢迎留言。
+
+另外之前读 [Unix Toolbox](http://cb.vu/unixtoolbox_zh_CN.xhtml) 中文版的时候发现那边没提供口袋版 PDF，所幸自己生成了全套格式的电子书，可以在这边下载：[unixtoolbox.tar.gz](http://code.google.com/p/project-vaynwords/downloads/detail?name=unixtoolbox.tar.gz)
+
+EOF

@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{{ page.title }}</title>
+    <!--[if IE]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="alternate" type="application/atom+xml" title="Vaggregator - RSS" href="http://feeds.feedburner.com/Vayn" />
+    <link rel="stylesheet" href="/css/master.css?1310975298" type="text/css" media="screen, projection" />
+    <script src="/js/jquery.min.js" type="text/javascript"></script>
+    <script src="/js/master.js" type="text/javascript"></script>
+</head>
+
+<body onload="setupZoom()">
+    <div id="header">
+        <div class="container">
+            <p id="logo"><a href="/">次世代 Jisedai NextGen</a></p>
+            <ul id="nav" class="clearfix">
+                <li{% if page.title == 'Toy' %} class="selected"{% endif %}><a href="/toy.html">Toy</a></li>
+                <li{% if page.title == 'Function' %} class="selected"{% endif %}><a href="/function.html">Function</a></li>
+                <li{% if page.title == 'Command' %} class="selected"{% endif %}><a href="/command.html">Command</a></li>
+                <li{% if page.title == 'Archive' %} class="selected"{% endif %}><a href="/archive.html">Archive</a></li>
+                <li{% if page.title == 'About' %} class="selected"{% endif %}><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="content-wrap">
+        <div class="container">
+
+        {{ content }}
+
+        </div>
+    </div>
+    <script type="text/javascript">
+        (function($){
+            $('#content-wrap').css("opacity", "0.3");
+        })(jQuery);
+    </script>
+
+    <div id="footer" class="container">
+        <p>Copyright &copy; 2009&ndash;{{ site.time | date: "%Y" }} <a href="mailto:v&#97;yn&#64;v&#97;yn.d&#101;">Vayn a.k.a. VT</a>
+        <span style="float:right;"><a href="#" onclick="$('html,body').animate({scrollTop:0},1000);return false;">TOP</a></span>
+    </div>
+
+<script src="/js/smoothscroll.js" type="text/javascript"> </script>
+<script src="/js/js-global/FancyZoom.js" type="text/javascript"></script>
+<script src="/js/js-global/FancyZoomHTML.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://js.tongji.linezing.com/2290591/tongji.js"></script><noscript><a href="http://www.linezing.com"><img src="http://img.tongji.linezing.com/2290591/tongji.gif"/></a></noscript>
+</body>
+</html>

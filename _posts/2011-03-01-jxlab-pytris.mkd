@@ -1,0 +1,89 @@
+---
+layout: post
+title: '{JxLab} Pytris'
+author: Vayn
+date: 2011-03-01
+categories:
+  - JxLab
+  - Python
+---
+
+我想很多程序员之所以与程序结下不解之缘，最大的原因就是小时候被电子游戏里神奇的声光效果勾起了探索的好奇心，至少我是这样。制作游戏是我一直以来的一个愿望，感谢 Python 让我有了梦想成真的机会。
+
+大名鼎鼎的 [Tetris（俄罗斯方块）](http://en.wikipedia.org/wiki/Tetris)应该很少有人没玩过吧，经典的七个方块造型和背景音乐可以说无人不晓。而且这个游戏本身设计并不算非常复杂，做为编程练习也非常合适。我花了很长时间学习了 [Tetromino](http://inventwithpython.com/tetromino.py) （一个 Tetris 游戏的 Python 版）的代码，然后把这个游戏重构了一遍。我把重构之后的游戏取名为 [Pytris][1]，即 Python + Tetris。
+
+![Pytris](https://github.com/Vayn/Pytris/raw/master/asset/image/screenshot01.png)
+
+![Pytris](https://github.com/Vayn/Pytris/raw/master/asset/image/screenshot02.png)
+
+Tetris 游戏的关键在于方块之间的判断，以及方块在屏幕上位置的计算。states.py 中的 Play 类就是用来实现这些功能的。
+
+{% highlight python %}
+class Play(State):
+    """
+    This is where the main part of the game.
+    """
+    lastMoveDownTime     = time.time()
+    lastMoveSidewaysTime = time.time()
+    lastFallTime         = time.time()
+
+    movingDown  = False
+    movingLeft  = False
+    movingRight = False
+
+    def __init__(self, score=0):
+        self.board = self.getNewBoard()
+        self.score = score
+        self.level = self.calculateLevel(self.score)
+        self.fallFreq = self.calculateFallFreq(self.level)
+        self.curPiece = self.getNewPiece()
+        self.nextPiece = self.getNewPiece()
+        self.playMusic()
+
+    def handle(self, event):
+        pass
+
+    def firstDisplay(self, screen):
+        self.screen = screen
+        screen.fill(BGCOLOR)
+        self.drawBoard(self.board)
+        self.drawStatus(self.score, self.level)
+        self.drawNextPiece(self.nextPiece)
+        self.drawPiece(self.curPiece)
+        pygame.display.update()
+
+    def update(self, game):
+        pass
+
+    def display(self, screen):
+        screen.fill(BGCOLOR)
+        self.drawBoard(self.board)
+        self.drawStatus(self.score, self.level)
+        self.drawNextPiece(self.nextPiece)
+        if self.curPiece is not None:
+            self.drawPiece(self.curPiece)
+        pygame.display.update()
+{% endhighlight %}
+
+`handle` 方法处理输入控制，`update` 方法处理方块的坐标更新，`display` 方法处理游戏画面的更新。这是 Play 类中最主要的三个方法，因为代码太长就不在这贴出来了。
+
+另外， 游戏中的方块是以“块”为单位绘制和移动的而不是像素，所以需要把背板（也就是游戏中方块能在里面移动的区域）按块重新划分。并且在绘制方块的时候，把方块所处的格子重新转换回像素坐标，这样才能正确绘制。
+
+{% highlight python %}
+def convertToPixelCoords(self, x, y):
+    # Convert the given x,y coordinates of the board to x,y coordinates of
+    # the location on the screen.
+    return (XMARGIN + (x * BLOCKSIZE)), ((BOARDTOP + (y * BLOCKSIZE)))
+{% endhighlight %}
+
+`convertToPixelCoords` 方法就是用来做转换的。计算方法很简单，将方块在背板的上坐标 (x, y) 分别乘以单位方块的大小 BLOCKSIZE，再分别加上背板与窗口左侧与上方的距离即可求出方块的像素坐标。
+
+[Pytris][1] 使用了 [Pygame](http://www.pygame.org/) 这个 Python module 做游戏引擎。Pygame 是个不错的游戏制作套件，有非常完善的文档和活跃的社区。如果你也想用 Python 制作小游戏，不妨试试 Pygame。
+
+Pytris 的源码和安装方法等等我都放到了 Github 上 —— [https://github.com/Vayn/Pytris][1]，欢迎各位 clone。
+
+最后，感谢 Tetromino 的作者 [Al Sweigart](http://inventwithpython.com/blog)。
+
+[1]:https://github.com/Vayn/Pytris
+
+EOF

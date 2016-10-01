@@ -1,0 +1,62 @@
+---
+layout: post
+title: '{Python} 颜色转换小工具'
+author: Vayn
+date: 2011-03-12
+categories:
+  -  color
+  -  python
+  -  DIY
+---
+之前学着写俄罗斯方块的时候参考了很多已有实现，其中有个是用 PyQt 实现的。代码中绘制方块的方法很有意思，它是把方块分成“明边、暗边、主体” 3 个部分。所谓明边、暗边是指在主体颜色的基础上对颜色的亮度进行增减，以产生立体效果。在 Qt 的 [QColor](http://doc.qt.nokia.com/4.7-snapshot/qcolor.html) 类里有专门的 darker 和 lighter 方法得到明暗变化后的颜色。
+
+我在写 [Pytris](/2011/03/01/jxlab-pytris.html) 的时候也曾想用类似的方法绘制方块（虽然最后没这么做），于是山寨了一下 QColor::darker 和 QColor::lighter。刚开始是想直接从 PyQt 扒代码的，但是那天网络不好死活没下载到源码，只好按照 Qt 文档里的大概意思自己写了个类似实现。
+
+darker（和 lighter）原理是先把颜色从常用的 RGB 格式转成 [HSV](http://en.wikipedia.org/wiki/HSL_and_HSV) 格式，增减 HSV 中 V 的值，然后后再转回 RGB 格式。很简单吧。而且 Python 的 colorsys 模块自带转化函数（唯一的问题是转化函数只接受 0~1 之间的值，所以要把像 (255, 255, 255) 这样的值先缩小，结果就出现了讨厌的小数……）。另外附带 10 进制和 16 进制颜色的转换函数。
+
+反正都是些小玩意儿，希望能帮到别人。
+
+{% highlight python %}
+#!/usr/bin/env python
+# vim:fileencoding=utf-8
+
+from colorsys import rgb_to_hsv, hsv_to_rgb
+from math import ceil
+
+__all__ = ['hex2rgb',
+           'rgb2hex',
+           'light',
+           'dark',
+          ]
+
+def hex2rgb(hexcolor):
+    rgb = [(hexcolor >> 16) & 0xff,
+           (hexcolor >> 8) & 0xff,
+           hexcolor & 0xff
+          ]
+    return rgb
+
+def rgb2hex(rgbcolor):
+    #return '0x%02x%02x%02x' % rgbcolor
+    r, g, b = rgbcolor
+    # notice '<<' has lower precedence than '+'
+    return (r << 16) + (g << 8) + b
+
+def light(color):
+    color = map(lambda x: x/float(255), color)
+    hsv = list(rgb_to_hsv(*color))
+    hsv[2] *= 1.5
+    color = hsv_to_rgb(*hsv)
+    return map(lambda x:
+               255 if int(ceil(x*255)) >= 255 else int(ceil(x*255)), color)
+
+def dark(color):
+    color = map(lambda x: x/float(255), color)
+    hsv = list(rgb_to_hsv(*color))
+    hsv[2] *= 2
+    color = hsv_to_rgb(*hsv)
+    return map(lambda x:
+               255 if int(ceil(x*255)) >= 255 else int(ceil(x*255)), color)
+{% endhighlight %}
+
+EOF

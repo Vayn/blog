@@ -1,0 +1,47 @@
+---
+layout: post
+title: '{Diary} I Love Vim'
+author: Vayn
+date: 2011-06-28
+categories:
+  - diary
+  - DIY
+  - python
+  - vim
+---
+
+好像又有很长时间没更新 blog 了，真的是越来越懒了啊哈哈。最近学了不少新东西，也做了一些小作品。好长时间不动笔，都快忘了该怎么良好的组织语言。
+
+### Vinergy 以及 [p.vim-cn.com](http://p.vim-cn.com)
+
+[Vinergy][1] 是[依云（lilydjwg）][2]和我合作开发的一个 [Pastebin][9] 程序。
+
+[Vinergy][1] 使用了 [web.py][3] 框架，web.py 小巧玲珑但功能还是很全的，而且部署起来也很方便。数据库方面，采用了 [MongoDB][4] 来储存数据。对于 Pastebin 这样的应用，MongoDB 的快速高效的优点能得到很大的发挥，schemaless 也让我省了很多事:P
+
+[p.vim-cn.com](http://p.vim-cn.com) 就是用 Vinergy 搭建的，支持从终端发送代码到 Vinergy、直接在终端阅读彩色高亮的代码片段。代码的语法渲染方式由 URL 决定，算是 RESTful 的一点小小实现吧。
+
+最后要说的，Vinergy 是用 [Vim][5] 里编写的:)
+
+### Fanfou.vim
+
+这是一个 [Vim][5] 上的饭否客户端，可以直接在 Vim 里发推、转推、查看最新的时间线。另外 [Fanfou.vim][6] 还附带了一些很贴心的小功能，比如回车直接复制链接，发送光标行到饭否，好友名称高亮等等。
+
+详细介绍和下载地址：[http://www.vim.org/scripts/script.php?script_id=3596][6]
+
+### Diablo3.vim
+
+一款暗色的 Vim 主题（colorscheme），同时支持 GUI 版的 Vim 和终端版 Vim。我自己觉得还挺好看的，如果你用腻了别的主题不妨来试试 Diablo3.vim（不要吐槽名字啦）。同样，[Diablo3.vim][7] 也有带个贴心功能，在这里感谢 [aligo][8] 贡献了这个想法。
+
+详细介绍和下载地址：[http://www.vim.org/scripts/script.php?script_id=3606][7]
+
+[1]: https://github.com/Vayn/Vinergy
+[2]: http://lilydjwg.is-programmer.com
+[3]: http://webpy.org
+[4]: http://www.mongodb.org
+[5]: http://www.vim.org
+[6]: http://www.vim.org/scripts/script.php?script_id=3596
+[7]: http://www.vim.org/scripts/script.php?script_id=3606
+[8]: http://aligo.me
+[9]: http://en.wikipedia.org/wiki/Pastebin
+
+EOF

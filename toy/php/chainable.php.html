@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>chainable.php.html</title>
+<meta name="Generator" content="Vim/7.3" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<style type="text/css">
+<!--
+.String { color: #fadc11; }
+.Constant { color: #d4ff36; font-weight: bold; }
+.Special { color: #66d9ef; background-color: #070914; font-style: italic; }
+.Operator { color: #6d8fd9; }
+.Identifier { color: #ff9900; }
+.StorageClass { color: #fd971f; font-style: italic; }
+.PreProc { color: #a6e22e; }
+.Statement { color: #6d8fd9; font-weight: bold; }
+pre { font-family: monospace; color: #f4f4f4; background-color: #070914; }
+body { font-family: monospace; color: #f4f4f4; background-color: #070914; }
+.Delimiter { color: #8f8f8f; }
+.Comment { color: #666666; }
+.Type { color: #66d9ef; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="Delimiter">&lt;?php</span>
+<span class="Comment"># PHP 的链式调用实现起来其实很简单，只要每个方法最后返回的是对象本身就行了。</span>
+<span class="Comment">#</span>
+<span class="Comment"># <a href="http://www.shesek.info/php/my-implementation-of-php-chainable">http://www.shesek.info/php/my-implementation-of-php-chainable</a></span>
+<span class="Comment"># 基本思想就是利用 Chainable 类来维护传入对象并实现对传入对象的链式调用。</span>
+
+<span class="Type">class</span> Chainable <span class="Special">{</span>
+    <span class="Type">private</span> <span class="Operator">$</span><span class="Identifier">obj</span>;
+    <span class="Type">private</span> <span class="Operator">$</span><span class="Identifier">result</span>;
+
+<span class="StorageClass">    public </span><span class="PreProc">function</span> <span class="Statement">__construct</span><span class="Special">(</span><span class="Operator">$</span><span class="Identifier">obj</span><span class="Special">)</span> <span class="Special">{</span>
+        <span class="Operator">$</span><span class="Identifier">this</span><span class="Type">-&gt;</span>obj <span class="Operator">=</span> <span class="Operator">$</span><span class="Identifier">obj</span>;
+<span class="Delimiter">    }</span>
+
+<span class="StorageClass">    public </span><span class="PreProc">function</span> <span class="Statement">__call</span><span class="Special">(</span><span class="Operator">$</span><span class="Identifier">method</span>, <span class="Operator">$</span><span class="Identifier">args</span><span class="Special">)</span> <span class="Special">{</span>
+        <span class="Statement">if</span> <span class="Special">(</span><span class="Identifier">substr</span><span class="Special">(</span><span class="Operator">$</span><span class="Identifier">method</span>, <span class="Constant">0</span>, <span class="Constant">1</span><span class="Special">)</span> <span class="Operator">==</span> '<span class="String">_</span>'<span class="Special">)</span> <span class="Special">{</span>
+            <span class="Identifier">array_unshift</span><span class="Special">(</span><span class="Operator">$</span><span class="Identifier">args</span>, <span class="Operator">$</span><span class="Identifier">this</span><span class="Type">-&gt;</span>result<span class="Special">)</span>;
+            <span class="Operator">$</span><span class="Identifier">method</span> <span class="Operator">=</span> <span class="Identifier">substr</span><span class="Special">(</span><span class="Operator">$</span><span class="Identifier">method</span>, <span class="Constant">1</span><span class="Special">)</span>;
+        <span class="Special">}</span>
+        <span class="Operator">$</span><span class="Identifier">this</span><span class="Type">-&gt;</span>result <span class="Operator">=</span> <span class="Identifier">call_user_func_array</span><span class="Special">(</span><span class="Type">array</span><span class="Special">(</span><span class="Operator">$</span><span class="Identifier">this</span><span class="Type">-&gt;</span>obj, <span class="Operator">$</span><span class="Identifier">method</span><span class="Special">)</span>, <span class="Operator">$</span><span class="Identifier">args</span><span class="Special">)</span>;
+        <span class="Statement">return</span> <span class="Operator">$</span><span class="Identifier">this</span>;
+<span class="Delimiter">    }</span>
+
+<span class="StorageClass">    public </span><span class="PreProc">function</span> <span class="Statement">__set</span><span class="Special">(</span><span class="Operator">$</span><span class="Identifier">key</span>, <span class="Operator">$</span><span class="Identifier">value</span><span class="Special">)</span> <span class="Special">{</span>
+        <span class="Operator">$</span><span class="Identifier">this</span><span class="Type">-&gt;</span>obj<span class="Operator">-&gt;</span><span class="Operator">$</span><span class="Identifier">key</span> <span class="Operator">=</span> <span class="Operator">$</span><span class="Identifier">value</span>;
+        <span class="Statement">return</span> <span class="Operator">$</span><span class="Identifier">this</span>;
+<span class="Delimiter">    }</span>
+
+<span class="StorageClass">    public </span><span class="PreProc">function</span> <span class="Statement">__get</span><span class="Special">(</span><span class="Operator">$</span><span class="Identifier">key</span><span class="Special">)</span> <span class="Special">{</span>
+        <span class="Statement">return</span> <span class="Operator">$</span><span class="Identifier">this</span><span class="Type">-&gt;</span>obj<span class="Operator">-&gt;</span><span class="Operator">$</span><span class="Identifier">key</span>;
+<span class="Delimiter">    }</span>
+
+<span class="StorageClass">    public </span><span class="PreProc">function</span> result<span class="Special">()</span> <span class="Special">{</span>
+        <span class="Statement">return</span> <span class="Operator">$</span><span class="Identifier">this</span><span class="Type">-&gt;</span>result;
+<span class="Delimiter">    }</span>
+
+    <span class="Comment"># new Chainable($obj)-&gt;foo() isn't possible.</span>
+    <span class="Comment"># Chainable::get($obj)-&gt;foo() is possible.</span>
+<span class="StorageClass">    public static </span><span class="PreProc">function</span> get<span class="Special">(</span><span class="Operator">$</span><span class="Identifier">obj</span><span class="Special">)</span> <span class="Special">{</span>
+        <span class="Operator">$</span><span class="Identifier">chainable</span> <span class="Operator">=</span> <span class="PreProc">new</span> Chainable<span class="Special">(</span><span class="Operator">$</span><span class="Identifier">obj</span><span class="Special">)</span>;
+        <span class="Statement">return</span> <span class="Operator">$</span><span class="Identifier">chainable</span>;
+<span class="Delimiter">    }</span>
+<span class="Special">}</span>
+
+<span class="Type">class</span> Foo <span class="Special">{</span>
+<span class="StorageClass">    public </span><span class="PreProc">function</span> bar<span class="Special">(</span><span class="Operator">$</span><span class="Identifier">str</span><span class="Special">)</span> <span class="Special">{</span>
+        <span class="Statement">return</span> '<span class="String">bar::</span>' <span class="Operator">.</span> <span class="Operator">$</span><span class="Identifier">str</span>;
+<span class="Delimiter">    }</span>
+
+<span class="StorageClass">    public </span><span class="PreProc">function</span> baz<span class="Special">(</span><span class="Operator">$</span><span class="Identifier">passed</span>, <span class="Operator">$</span><span class="Identifier">str</span><span class="Special">)</span> <span class="Special">{</span>
+        <span class="Statement">return</span> '<span class="String">baz::</span>' <span class="Operator">.</span> <span class="Operator">$</span><span class="Identifier">str</span> <span class="Operator">.</span> '<span class="String"> -- passed::</span>' <span class="Operator">.</span> <span class="Operator">$</span><span class="Identifier">passed</span>;
+<span class="Delimiter">    }</span>
+
+    <span class="Comment"># When we use &quot;Chainable::get($obj)-&gt;foo()&quot; to invoke method,</span>
+    <span class="Comment"># chain() is useless.</span>
+<span class="StorageClass">    public </span><span class="PreProc">function</span> chain<span class="Special">()</span> <span class="Special">{</span>
+        <span class="Statement">return</span> Chainable<span class="Operator">::</span>get<span class="Special">(</span><span class="Operator">$</span><span class="Identifier">this</span><span class="Special">)</span>;
+<span class="Delimiter">    }</span>
+<span class="Special">}</span>
+
+<span class="Operator">$</span><span class="Identifier">foo</span> <span class="Operator">=</span> <span class="PreProc">new</span> Foo;
+
+<span class="PreProc">echo</span> Chainable<span class="Operator">::</span>get<span class="Special">(</span><span class="Operator">$</span><span class="Identifier">foo</span><span class="Special">)</span><span class="Type">-&gt;</span>bar<span class="Special">(</span>'<span class="String">Vayn</span>'<span class="Special">)</span><span class="Type">-&gt;</span>_baz<span class="Special">(</span>'<span class="String">test</span>'<span class="Special">)</span><span class="Type">-&gt;</span>result<span class="Special">()</span>;
+<span class="PreProc">echo</span> &quot;<span class="Special">\n</span>&quot;;
+
+<span class="PreProc">echo</span> <span class="Operator">$</span><span class="Identifier">foo</span><span class="Type">-&gt;</span>chain<span class="Special">()</span><span class="Type">-&gt;</span>bar<span class="Special">(</span>'<span class="String">Vayn</span>'<span class="Special">)</span><span class="Type">-&gt;</span>_baz<span class="Special">(</span>'<span class="String">test</span>'<span class="Special">)</span><span class="Type">-&gt;</span>result<span class="Special">()</span>;
+<span class="PreProc">echo</span> &quot;<span class="Special">\n</span>&quot;;
+
+<span class="Operator">$</span><span class="Identifier">foo</span><span class="Type">-&gt;</span>chain<span class="Special">()</span><span class="Type">-&gt;</span>tnt <span class="Operator">=</span> '<span class="String">boom</span>';
+<span class="PreProc">echo</span> <span class="Operator">$</span><span class="Identifier">foo</span><span class="Type">-&gt;</span>tnt;
+<span class="PreProc">echo</span> &quot;<span class="Special">\n</span>&quot;;
+
+<span class="Comment"># 蛋疼一次 &gt;&lt;</span>
+<span class="PreProc">echo</span> Chainable<span class="Operator">::</span>get<span class="Special">(</span><span class="Operator">$</span><span class="Identifier">foo</span><span class="Special">)</span><span class="Type">-&gt;</span>__set<span class="Special">(</span>'<span class="String">power</span>', '<span class="String">nuclear</span>'<span class="Special">)</span><span class="Type">-&gt;</span>bar<span class="Special">(</span><span class="Operator">$</span><span class="Identifier">foo</span><span class="Type">-&gt;</span>power<span class="Special">)</span><span class="Type">-&gt;</span>_baz<span class="Special">(</span><span class="Operator">$</span><span class="Identifier">foo</span><span class="Type">-&gt;</span>tnt<span class="Special">)</span><span class="Type">-&gt;</span>result<span class="Special">()</span>;
+
+<span class="Delimiter">?&gt;</span>
+</pre>
+<script type="text/javascript" src="http://js.tongji.linezing.com/2290591/tongji.js"></script><noscript><a href="http://www.linezing.com"><img src="http://img.tongji.linezing.com/2290591/tongji.gif"/></a></noscript>
+</body>
+</html>

@@ -1,0 +1,52 @@
+---
+layout: post
+title: '{Think} Rework Note'
+author: Vayn
+date: 2010-10-24
+categories:
+  - note
+  - think
+  - important
+---
+
+_Rework_ 是 [37signals](http://37signals.com) 继 _[Getting Real](http://gettingreal.37signals.com/GR_chn.php)_ 之后的第二本书，同上本一样短小精悍的风格，我花了 2 个小时就读完了。
+
+我有一些一般很难找到答案的问题，比如：每天上班学习之余，我还能做什么，怎么做；如果一个上班族既不想辞职又想创业，有什么办法；觉得自己有一堆好点子，但似乎挤不出时间来实现？这些问题在 _Rework_ 都能找到解答。
+
+<p style="text-align:center;"><a href="http://v2ex.appspot.com/rework" target="_blank"><img src ="http://web.me.com/v2ex.livid/rework/rework.png" alt="Rework"/></a></p>
+
+以下是读书摘抄：
+
+0) 他们说你们应该和 500 强做生意。见鬼去吧。我们的产品卖给 5,000,000 强。
+
+1) 不要过早的纠节于细节。
+
+2) 调子出自你的指尖，而不是别的。
+
+3) 把你的时间分成小份。各个击破。冗长的清单不靠谱。
+
+4) 你很少因为说不而后悔，但你常常因为说“好的”而后悔。
+
+5) 残缺的美（Wabi-Sabi）。说话要靠谱。
+
+6) 上学和受教育是两码事。（ I have never let my schooling interface with my education.) —— Mark Twain
+
+7) 最糟的道歉是不含道歉的道歉。比如，“对不起，让你失望了。”“对不起，如果这样打扰你的话……”
+
+8) 可能你会觉得没有时间和顾客打交道，那么挤出时间来。Craigslist 的创始人 Craig Newmark 如今仍在回复支持邮件。
+
+9) 你不能让人 8 小时都在工作，那是个神话。
+
+10) 不要在一个人做错一次的情况下就制定一个政策。
+
+11) 避免行话或者任何形式的书面语言。四个字能表达不要用七个字。
+
+12) 商务中一些 4 字母词应被避免，如：need, must, fast, easy, only, just, can't。以及它们的近亲：everyone, always……
+
+13) 保留紧急用语在真正紧急的情况再用。
+
+14) 如果你想做什么，现在就去做。
+
+15) 灵感就像新鲜的水果或者牛奶：它有保质期。
+
+EOF

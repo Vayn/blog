@@ -1,0 +1,15 @@
+---
+layout: default
+title: Toy
+---
+
+__Python__
+
+[几种常用排序算法的 Python 实现](/toy/python/sort.py.html) —— 不知道为什么用 timeit 测试 Quick Sort 的时候竟然出现了超时，只好自己弄了个山寨测试。Quick Sort 不愧是最受欢迎的排序算法，不过数据少的时候 Bubble Sort 和 Insertion Sort 就够了。
+
+---
+
+__PHP__
+
+[Chainable Object](/toy/php/chainable.php.html) ——  今天在看 <abbr title="Code Igniter">CI</abbr> 的文档的时候发现 CI 的 Email 类支持链式调用。原来 PHP 里也是支持链式的调用的。
+

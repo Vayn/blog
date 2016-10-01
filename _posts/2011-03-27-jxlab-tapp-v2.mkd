@@ -1,0 +1,76 @@
+---
+layout: post
+title: '{JxLab} TAPP V2'
+author: Vayn
+date: 2011-03-27
+categories:
+  -  DIY
+  -  PHP
+---
+
+去年的时候和 [@disinfeqt](http://disinfeqt.com/) 合作制作了 [TAPP][1]，这个软件不是 [twitter][2] 的 web 客户端，但可以让你更轻松的查看和展示自己在 twitter 上发布的消息。
+
+[TAPP][1] 支持 JSON、RSS和 HTML 这三种格式输出消息。生成类似 Twitter 那种 Badge 或签名图，你可以把它们嵌入 blog 侧栏、签名或其它任意地方。除此之外，[TAPP][1] 也有自动更新的机制，简单设置后就能自己抓取最新消息。
+
+![TAPP V2](/images/archive/2011/tapp2/tappv200.png)
+
+之前 TAPP V1 完全是以 Quick &amp; Dirty 的策略来实作的，想到一个功能就直接加上去，最后的结果是很多的代码堆砌，基本谈不上代码重用。
+
+在完成第一版后偶就没继续更新了，一个是因为软件的目标大致已经实现，更重要的一点是代码量慢慢增加后，由于前面给自己挖了个大坑，导致后面想做改进也变得困难起来……因此做第二版偶下定决心把 TAPP 重构。
+
+TAPP V2 抛弃原先 flat code 的实现方式，采用了 [Code Igniter][3] 框架。数据存储也从原先的文本方式转为使用 [sqlite3][4]。之所以选择 [Code Igniter][3] 和 [sqlite3][4] 是因为两者都很轻巧，对于 TAPP 这样的小项目来说最合适不过。
+
+__DEMO__: [http://www.tapp.dotcloud.com](http://www.tapp.dotcloud.com) （ID &amp; Password - hal:9000 ）
+
+重构之后 TAPP 结构上变成了 <abbr title="Model-View-Controller">MVC</abbr>，功能实现了模块化，无论是代码重用、添加功能亦或修改代码都比原先方便。当然，偶自己看代码什么的也舒服很多，哈哈。
+
+下面说下 TAPP 的安装和使用。
+
+首先从 Github 上获取 [TAPP][1] 的最新代码，打开 `application/config/config.php`，修改 `$config['base_url']` 的值为你自己的 url，保存关闭。
+
+用 [SQLite Database Browser](http://sqlitebrowser.sourceforge.net/) 或其他工具打开 `application/db/user.sqlite3` 数据库，里面有 users, setting 和 tweets 3 个表，users 表存放 TAPP 用户的登录信息，setting 表存放每个用户的设置，tweets 表暂时没用。
+
+打开 users 表可以看到里面已经有一个账号，这个账号是 TAPP 的默认账号，用户名是 hal，密码是 9000。你可以修改这个账号，但请不要删除。如果想添加新用户，直接在 users 表添加就好了。
+
+设置好后把 TAPP 上传到服务器上。TAPP 的运行环境：
+
+* 支持 rewrite 功能 的 Apache 或者 Nginx 服务器
+* PHP 5
+* PHP 已开启 Curl 和 PDO 支持
+
+偶想现在大部分空间都应该满足这些条件。
+
+打开浏览器，你应该能看到这样的界面：
+
+![TAPP V2](/images/archive/2011/tapp2/tappv201.png)
+
+输入默认账号和密码，自动转到设定界面：
+
+![TAPP V2](/images/archive/2011/tapp2/tappv202.png)
+
+Twitter username：你的 twitter 账号
+
+Amount：抓取条目数
+
+Replies：是否包含回复他人的条目
+
+Cache time：缓存时限
+
+Output：输出格式。选择格式后会在下方的 Your include code 自动显示生成代码（选择 JSON 格式可生成 Badge），你只需复制代码贴到你想贴的地方就能展示了。
+
+点击底部的 Show 可生成签名图:
+
+![TAPP V2](/images/archive/2011/tapp2/tappv203.png)
+
+点击 Clear Cache 清空自己的缓存。Logout 退出设置。如果仅想使用 TAPP 但不想安装，请给偶留言开通 [Demo](http://www.tapp.dotcloud.com) 站账号。
+
+---
+
+TAPP 是自由软件，你可以在遵守 TAPP 授权的情况下使用、修改甚至重新分发 TAPP 的源码。TAPP 的作者 Vayn 和 disinfeqt 不对使用 TAPP 产生的任何问题负责。
+
+[1]:https://github.com/vayn/tapp
+[2]:http://twitter.com/
+[3]:http://codeigniter.com/
+[4]:http://www.sqlite.org/
+
+EOF

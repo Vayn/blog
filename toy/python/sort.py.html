@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>sort.py.html</title>
+<meta name="Generator" content="Vim/7.3" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<style type="text/css">
+<!--
+.Function { color: #cbfe28; }
+.Operator { color: #6d8fd9; }
+.Repeat { color: #f92672; font-weight: bold; }
+.Number { color: #ae81ff; }
+.Structure { color: #66d9ef; }
+.Conditional { color: #6d8fd9; font-weight: bold; }
+.String { color: #fadc11; }
+pre { font-family: monospace; color: #f4f4f4; background-color: #070914; }
+body { font-family: monospace; color: #f4f4f4; background-color: #070914; }
+.Special { color: #66d9ef; background-color: #070914; font-style: italic; }
+.Comment { color: #666666; }
+.Statement { color: #6d8fd9; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="Special">#!/usr/bin/esizev pythosize</span>
+<span class="Special"># -*- coding:utf-8 -*-</span>
+<span class="Comment"># @Author: Vayn a.k.a. VT &lt;vayn@vayn.de&gt;</span>
+<span class="Comment"># @Name: sort.py</span>
+<span class="Comment"># @Date: 2011年03月19日 星期六 12时20分29秒</span>
+
+<span class="Statement">import</span> timeit
+<span class="Statement">from</span> random <span class="Statement">import</span> shuffle
+<span class="Statement">from</span> time <span class="Statement">import</span> time
+
+<span class="Comment"># Bubble Sort</span>
+<span class="Statement">def</span> <span class="Function">bubble_sort</span><span class="Operator">(</span>array<span class="Operator">)</span>:
+    size <span class="Operator">=</span> <span class="Function">len</span><span class="Operator">(</span>array<span class="Operator">)</span>
+    <span class="Repeat">for</span> i <span class="Operator">in</span> <span class="Function">xrange</span><span class="Operator">(</span>size<span class="Operator">-</span><span class="Number">1</span><span class="Operator">,</span> <span class="Number">0</span><span class="Operator">,</span> <span class="Operator">-</span><span class="Number">1</span><span class="Operator">)</span>: <span class="Comment"># for (i = size - 1; i &gt; 0; --i)</span>
+        issorted <span class="Operator">=</span> <span class="Structure">False</span>
+        j <span class="Operator">=</span> <span class="Number">0</span>
+        <span class="Repeat">for</span> j <span class="Operator">in</span> <span class="Function">xrange</span><span class="Operator">(</span><span class="Number">0</span><span class="Operator">,</span> i<span class="Operator">-</span>j<span class="Operator">,</span> <span class="Number">1</span><span class="Operator">)</span>:
+            <span class="Conditional">if</span> array[j] &gt; array[j<span class="Operator">+</span><span class="Number">1</span>]:
+                issorted <span class="Operator">=</span> <span class="Structure">True</span>
+                array[j]<span class="Operator">,</span> array[j<span class="Operator">+</span><span class="Number">1</span>] <span class="Operator">=</span> array[j<span class="Operator">+</span><span class="Number">1</span>]<span class="Operator">,</span> array[j]
+        <span class="Conditional">if</span> <span class="Operator">not</span> issorted:
+            <span class="Statement">break</span>;
+
+<span class="Comment"># Insert Sort</span>
+<span class="Statement">def</span> <span class="Function">insert_sort</span><span class="Operator">(</span>array<span class="Operator">)</span>:
+    size <span class="Operator">=</span> <span class="Function">len</span><span class="Operator">(</span>array<span class="Operator">)</span>
+    i <span class="Operator">=</span> <span class="Number">0</span>
+    <span class="Repeat">for</span> i <span class="Operator">in</span> <span class="Function">xrange</span><span class="Operator">(</span><span class="Number">0</span><span class="Operator">,</span> size<span class="Operator">-</span>i<span class="Operator">-</span><span class="Number">1</span><span class="Operator">,</span> <span class="Number">1</span><span class="Operator">)</span>: <span class="Comment"># for (i = 0; i + 1 &lt; size; ++i)</span>
+        j <span class="Operator">=</span> i <span class="Operator">+</span> <span class="Number">1</span>
+        tmp <span class="Operator">=</span> array[j]
+        <span class="Repeat">while</span> j &gt; <span class="Number">0</span> <span class="Operator">and</span> tmp &lt; array[j<span class="Operator">-</span><span class="Number">1</span>]:
+            array[j] <span class="Operator">=</span> array[j<span class="Operator">-</span><span class="Number">1</span>]
+            j <span class="Operator">-=</span> <span class="Number">1</span>
+        array[j] <span class="Operator">=</span> tmp
+
+<span class="Comment"># Shell Sort</span>
+<span class="Statement">def</span> <span class="Function">shell_sort</span><span class="Operator">(</span>array<span class="Operator">)</span>:
+    size <span class="Operator">=</span> <span class="Function">len</span><span class="Operator">(</span>array<span class="Operator">)</span>
+    step <span class="Operator">=</span> size / <span class="Number">2</span>
+    <span class="Repeat">while</span> step &gt; <span class="Number">0</span>:
+        <span class="Repeat">for</span> i <span class="Operator">in</span> <span class="Function">xrange</span><span class="Operator">(</span>step<span class="Operator">)</span>:
+            <span class="Repeat">for</span> j <span class="Operator">in</span> <span class="Function">xrange</span><span class="Operator">(</span>i<span class="Operator">+</span>step<span class="Operator">,</span> size<span class="Operator">,</span> step<span class="Operator">)</span>:
+                <span class="Repeat">for</span> k <span class="Operator">in</span> <span class="Function">xrange</span><span class="Operator">(</span>j<span class="Operator">-</span>step<span class="Operator">,</span> i<span class="Operator">-</span><span class="Number">1</span><span class="Operator">,</span> <span class="Operator">-</span>step<span class="Operator">)</span>:
+                    <span class="Conditional">if</span> array[k] &gt; array[k<span class="Operator">+</span>step]:
+                        array[k]<span class="Operator">,</span> array[k<span class="Operator">+</span>step] <span class="Operator">=</span> array[k<span class="Operator">+</span>step]<span class="Operator">,</span> array[k]
+                    <span class="Conditional">else</span>:
+                        <span class="Statement">break</span>
+        <span class="Conditional">if</span> step <span class="Operator">==</span> <span class="Number">2</span>:
+            step <span class="Operator">=</span> <span class="Number">1</span>
+        <span class="Conditional">else</span>:
+            step <span class="Operator">=</span> <span class="Operator">(</span>step <span class="Operator">-</span> <span class="Number">1</span><span class="Operator">)</span> / <span class="Number">3</span>
+
+<span class="Comment"># Quick Sort</span>
+<span class="Comment"># <a href="http://hetland.org/coding/python/quicksort.html">http://hetland.org/coding/python/quicksort.html</a></span>
+<span class="Statement">def</span> <span class="Function">partition</span><span class="Operator">(</span>array<span class="Operator">,</span> start<span class="Operator">,</span> end<span class="Operator">)</span>:
+    pivot <span class="Operator">=</span> array[end]
+    bottom <span class="Operator">=</span> start <span class="Operator">-</span> <span class="Number">1</span>
+    top <span class="Operator">=</span> end
+
+    done <span class="Operator">=</span> <span class="Number">0</span>
+    <span class="Repeat">while</span> <span class="Operator">not</span> done:
+
+        <span class="Repeat">while</span> <span class="Operator">not</span> done:
+            bottom <span class="Operator">+=</span> <span class="Number">1</span>
+            <span class="Conditional">if</span> bottom <span class="Operator">==</span> top:
+                done <span class="Operator">=</span> <span class="Number">1</span>
+                <span class="Statement">break</span>
+            <span class="Conditional">if</span> array[bottom] &gt; pivot:
+                array[top] <span class="Operator">=</span> array[bottom]
+                <span class="Statement">break</span>
+
+        <span class="Repeat">while</span> <span class="Operator">not</span> done:
+            top <span class="Operator">-=</span> <span class="Number">1</span>
+
+            <span class="Conditional">if</span> top <span class="Operator">==</span> bottom:
+                done <span class="Operator">=</span> <span class="Number">1</span>
+                <span class="Statement">break</span>
+            <span class="Conditional">if</span> array[top] &lt; pivot:
+                array[bottom] <span class="Operator">=</span> array[top]
+                <span class="Statement">break</span>
+    array[top] <span class="Operator">=</span> pivot
+    <span class="Statement">return</span> top
+<span class="Statement">def</span> <span class="Function">quick_sort_ip</span><span class="Operator">(</span>array<span class="Operator">,</span> start<span class="Operator">,</span> end<span class="Operator">)</span>:
+    <span class="Conditional">if</span> start &lt; end:
+        split <span class="Operator">=</span> partition<span class="Operator">(</span>array<span class="Operator">,</span> start<span class="Operator">,</span> end<span class="Operator">)</span>
+        quick_sort_ip<span class="Operator">(</span>array<span class="Operator">,</span> start<span class="Operator">,</span> split<span class="Operator">-</span><span class="Number">1</span><span class="Operator">)</span>
+        quick_sort_ip<span class="Operator">(</span>array<span class="Operator">,</span> split<span class="Operator">+</span><span class="Number">1</span><span class="Operator">,</span> end<span class="Operator">)</span>
+    <span class="Conditional">else</span>:
+        <span class="Statement">return</span>
+<span class="Comment"># <a href="http://zh.wikipedia.org/wiki/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F">http://zh.wikipedia.org/wiki/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F</a></span>
+<span class="Statement">def</span> <span class="Function">quick_sort</span><span class="Operator">(</span>array<span class="Operator">)</span>:
+   <span class="Conditional">if</span> <span class="Operator">not</span> array: <span class="Statement">return</span> []
+   <span class="Statement">return</span> quick_sort<span class="Operator">(</span>[x <span class="Repeat">for</span> x <span class="Operator">in</span> array[<span class="Number">1</span>:] <span class="Conditional">if</span> x&lt; array[<span class="Number">0</span>]]<span class="Operator">)</span> <span class="Operator">+</span> array[<span class="Number">0</span>:<span class="Number">1</span>] <span class="Operator">+</span> <span class="Operator">\</span>
+          quick_sort<span class="Operator">(</span>[x <span class="Repeat">for</span> x <span class="Operator">in</span> array[<span class="Number">1</span>:] <span class="Conditional">if</span> x&gt;<span class="Operator">=</span>array[<span class="Number">0</span>]]<span class="Operator">)</span>
+
+<span class="Comment"># Merge Sort</span>
+<span class="Comment"># <a href="http://en.literateprograms.org/Merge_sort_%28Python%29">http://en.literateprograms.org/Merge_sort_%28Python%29</a></span>
+<span class="Statement">def</span> <span class="Function">merge</span><span class="Operator">(</span>left<span class="Operator">,</span> right<span class="Operator">)</span>:
+    result <span class="Operator">=</span> []
+    i<span class="Operator">,</span> j <span class="Operator">=</span> <span class="Number">0</span><span class="Operator">,</span> <span class="Number">0</span>
+    <span class="Repeat">while</span> i &lt; <span class="Function">len</span><span class="Operator">(</span>left<span class="Operator">)</span> <span class="Operator">and</span> j &lt; <span class="Function">len</span><span class="Operator">(</span>right<span class="Operator">)</span>:
+        <span class="Conditional">if</span> left[i] &lt;<span class="Operator">=</span> right[j]:
+            result<span class="Operator">.</span>append<span class="Operator">(</span>left[i]<span class="Operator">)</span>
+            i <span class="Operator">+=</span> <span class="Number">1</span>
+        <span class="Conditional">else</span>:
+            result<span class="Operator">.</span>append<span class="Operator">(</span>right[j]<span class="Operator">)</span>
+            j <span class="Operator">+=</span> <span class="Number">1</span>
+    result <span class="Operator">+=</span> left[i:]
+    result <span class="Operator">+=</span> right[j:]
+    <span class="Statement">return</span> result
+<span class="Statement">def</span> <span class="Function">merge_sort</span><span class="Operator">(</span>array<span class="Operator">)</span>:
+    size <span class="Operator">=</span> <span class="Function">len</span><span class="Operator">(</span>array<span class="Operator">)</span>
+    <span class="Conditional">if</span> size &lt; <span class="Number">2</span>:
+        <span class="Statement">return</span> array
+    <span class="Conditional">else</span>:
+        middle <span class="Operator">=</span> size / <span class="Number">2</span>
+        left <span class="Operator">=</span> merge_sort<span class="Operator">(</span>array[:middle]<span class="Operator">)</span>
+        right <span class="Operator">=</span> merge_sort<span class="Operator">(</span>array[middle:]<span class="Operator">)</span>
+        <span class="Statement">return</span> merge<span class="Operator">(</span>left<span class="Operator">,</span> right<span class="Operator">)</span>
+
+<span class="Comment"># Heap Sort</span>
+<span class="Statement">def</span> <span class="Function">sift</span><span class="Operator">(</span>array<span class="Operator">,</span> start<span class="Operator">,</span> count<span class="Operator">)</span>: <span class="Comment"># sift to build the heap rooted by array[start]</span>
+    root <span class="Operator">=</span> array[start]
+    <span class="Repeat">while</span> <span class="Operator">(</span><span class="Number">2</span> <span class="Operator">*</span> start <span class="Operator">+</span> <span class="Number">1</span> &lt; count<span class="Operator">)</span>:
+        child <span class="Operator">=</span> <span class="Number">2</span> <span class="Operator">*</span> start <span class="Operator">+</span> <span class="Number">1</span>
+        <span class="Conditional">if</span> <span class="Operator">(</span>child <span class="Operator">+</span> <span class="Number">1</span> &lt; count<span class="Operator">)</span> <span class="Operator">and</span> <span class="Operator">(</span>array[child<span class="Operator">+</span><span class="Number">1</span>] &gt; array[child]<span class="Operator">)</span>:
+            child <span class="Operator">+=</span> <span class="Number">1</span>
+        <span class="Conditional">if</span> array[child] &gt; root:
+            array[start] <span class="Operator">=</span> array[child]
+            start <span class="Operator">=</span> child
+        <span class="Conditional">else</span>:
+            <span class="Statement">break</span>;
+    array[start] <span class="Operator">=</span> root
+<span class="Statement">def</span> <span class="Function">heap_sort</span><span class="Operator">(</span>array<span class="Operator">)</span>:
+    size <span class="Operator">=</span> <span class="Function">len</span><span class="Operator">(</span>array<span class="Operator">)</span>
+    <span class="Comment"># for (i = (size - 2) / 2; i &gt;= 0, --i)</span>
+    <span class="Repeat">for</span> i <span class="Operator">in</span> <span class="Function">xrange</span><span class="Operator">((</span>size<span class="Operator">-</span><span class="Number">2</span><span class="Operator">)</span>/<span class="Number">2</span><span class="Operator">,</span> <span class="Operator">-</span><span class="Number">1</span><span class="Operator">,</span> <span class="Operator">-</span><span class="Number">1</span><span class="Operator">)</span>: <span class="Comment"># build heap</span>
+        sift<span class="Operator">(</span>array<span class="Operator">,</span> i<span class="Operator">,</span> size<span class="Operator">)</span>
+    <span class="Comment"># for (i = 1; i &lt; size; ++i)</span>
+    <span class="Repeat">for</span> i <span class="Operator">in</span> <span class="Function">xrange</span><span class="Operator">(</span><span class="Number">1</span><span class="Operator">,</span> size<span class="Operator">-</span>i<span class="Operator">,</span> <span class="Number">1</span><span class="Operator">)</span>: <span class="Comment"># rebuild the decreasing heap over and over</span>
+        array[<span class="Number">0</span>]<span class="Operator">,</span> array[size<span class="Operator">-</span>i] <span class="Operator">=</span> array[size<span class="Operator">-</span>i]<span class="Operator">,</span> array[<span class="Number">0</span>]
+        sift<span class="Operator">(</span>array<span class="Operator">,</span> <span class="Number">0</span><span class="Operator">,</span> size<span class="Operator">-</span>i<span class="Operator">)</span>
+
+<span class="Statement">def</span> <span class="Function">timeit_test</span><span class="Operator">()</span>:
+    random_array <span class="Operator">=</span> <span class="Function">range</span><span class="Operator">(</span><span class="Number">1000000</span><span class="Operator">)</span>
+    shuffle<span class="Operator">(</span>random_array<span class="Operator">)</span>
+
+    sort_list <span class="Operator">=</span> [shell_sort<span class="Operator">,</span> merge_sort<span class="Operator">,</span> heap_sort<span class="Operator">,</span> quick_sort_ip<span class="Operator">,</span>]
+    funcs <span class="Operator">=</span> <span class="String">','</span><span class="Operator">.</span>join<span class="Operator">(</span>[x<span class="Operator">.</span><span class="Structure">__name__</span> <span class="Repeat">for</span> x <span class="Operator">in</span> sort_list]<span class="Operator">)</span>
+    funcs <span class="Operator">+=</span> <span class="String">',random_array'</span>
+
+    <span class="Repeat">for</span> sortfunc <span class="Operator">in</span> sort_list:
+        name <span class="Operator">=</span> sortfunc<span class="Operator">.</span><span class="Structure">__name__</span>
+        <span class="Conditional">if</span> name <span class="Operator">not</span> <span class="Operator">in</span> <span class="Operator">(</span><span class="String">'quick_sort_ip'</span><span class="Operator">,)</span>:
+            statement <span class="Operator">=</span> <span class="String">&quot;</span><span class="Special">%s</span><span class="String">(random_array)&quot;</span> % name
+        <span class="Conditional">else</span>:
+            statement <span class="Operator">=</span> <span class="String">&quot;quick_sort_ip(random_array, 0, 1000000-1)&quot;</span>
+        t <span class="Operator">=</span> timeit<span class="Operator">.</span>Timer<span class="Operator">(</span>statement<span class="Operator">,</span> <span class="String">&quot;from __main__ import </span><span class="Special">%s</span><span class="String">&quot;</span> % funcs<span class="Operator">)</span>
+        <span class="Statement">print</span> name<span class="Operator">.</span>ljust<span class="Operator">(</span><span class="Number">15</span><span class="Operator">),</span> t<span class="Operator">.</span>timeit<span class="Operator">(</span><span class="Number">1</span><span class="Operator">)</span>
+
+<span class="Statement">def</span> <span class="Function">shanzhai_test</span><span class="Operator">()</span>:
+    <span class="Statement">def</span> <span class="Function">timer</span><span class="Operator">()</span>:
+        <span class="Statement">return</span> <span class="Function">int</span><span class="Operator">(</span>time<span class="Operator">())</span>
+    <span class="Statement">def</span> <span class="Function">t1</span><span class="Operator">(</span>func<span class="Operator">,</span> array<span class="Operator">)</span>:
+        shuffle<span class="Operator">(</span>array<span class="Operator">)</span>
+        start <span class="Operator">=</span> timer<span class="Operator">()</span>
+        func<span class="Operator">(</span>array<span class="Operator">)</span>
+        <span class="Statement">return</span> timer<span class="Operator">()</span> <span class="Operator">-</span> start
+    <span class="Statement">def</span> <span class="Function">t2</span><span class="Operator">(</span>array<span class="Operator">)</span>:
+        shuffle<span class="Operator">(</span>array<span class="Operator">)</span>
+        start <span class="Operator">=</span> timer<span class="Operator">()</span>
+        quick_sort_ip<span class="Operator">(</span>array<span class="Operator">,</span> <span class="Number">0</span><span class="Operator">,</span> <span class="Function">len</span><span class="Operator">(</span>array<span class="Operator">)-</span><span class="Number">1</span><span class="Operator">)</span>
+        <span class="Statement">return</span> timer<span class="Operator">()</span> <span class="Operator">-</span> start
+
+    sort_list <span class="Operator">=</span> [shell_sort<span class="Operator">,</span> merge_sort<span class="Operator">,</span> heap_sort<span class="Operator">,</span> quick_sort_ip<span class="Operator">,</span> quick_sort]
+    lst <span class="Operator">=</span> <span class="Function">range</span><span class="Operator">(</span><span class="Number">500000</span><span class="Operator">)</span>
+    <span class="Repeat">for</span> func <span class="Operator">in</span> sort_list:
+        <span class="Conditional">if</span> func<span class="Operator">.</span><span class="Structure">__name__</span> !<span class="Operator">=</span> <span class="String">'quick_sort_ip'</span>:
+            <span class="Statement">print</span> func<span class="Operator">.</span><span class="Structure">__name__</span><span class="Operator">.</span>ljust<span class="Operator">(</span><span class="Number">15</span><span class="Operator">),</span> t1<span class="Operator">(</span>func<span class="Operator">,</span> lst<span class="Operator">)</span>
+        <span class="Conditional">else</span>:
+            <span class="Statement">print</span> func<span class="Operator">.</span><span class="Structure">__name__</span><span class="Operator">.</span>ljust<span class="Operator">(</span><span class="Number">15</span><span class="Operator">),</span> t2<span class="Operator">(</span>lst<span class="Operator">)</span>
+
+<span class="Conditional">if</span> <span class="Structure">__name__</span> <span class="Operator">==</span> <span class="String">'__main__'</span>:
+    shanzhai_test<span class="Operator">()</span>
+</pre>
+<script type="text/javascript" src="http://js.tongji.linezing.com/2290591/tongji.js"></script><noscript><a href="http://www.linezing.com"><img src="http://img.tongji.linezing.com/2290591/tongji.gif"/></a></noscript>
+</body>
+</html>

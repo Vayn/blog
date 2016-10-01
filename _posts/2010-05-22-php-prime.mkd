@@ -1,0 +1,70 @@
+---
+layout: post
+title: '{PHP} Prime'
+author: Vayn
+date: 2010-05-22T13:56:00+0000
+categories:
+  - algorithm
+  - math
+  - php
+
+---
+
+基础版：
+
+{% highlight php %}
+<?php
+
+$sum = 2;
+
+for ($i = 3; $i < 10000; $i+=2) {
+  $flag = True;
+
+  for ($j = 2; $j <= sqrt($i); $j++) {
+     if ($i % $j == 0) {
+       $flag = False;
+       break;
+     }
+  }
+
+   if ($flag) {
+     $sum += $i;
+     echo $i . "\n";
+   }
+}
+
+echo $sum . "\n";
+
+?>
+{% endhighlight %}
+
+从[神仙居](http://syre.blogbus.com/)看到的《[筛法找质数之PHP版](http://syre.blogbus.com/logs/5731300.html)》
+
+{% highlight php %}
+<?php
+define('MAX_NUM', 1000000);
+$all = array_fill(0, MAX_NUM, 0);
+
+echo "2\n";
+for ($i = 3; $i < MAX_NUM; $i+=2) {    
+    if ($all[$i] == 0) {
+        echo $i."\n";  //测试性能时去掉这行。输出会占据大部分时间。
+        for ($j = $i; $j < MAX_NUM; $j+=$i) {
+            $all[$j] = 1;
+        }
+    }
+}
+?>
+{% endhighlight %}
+
+---
+
+参考资料：
+
+1. [问一个超级弱的问题，求素数中为什么要先开平方](http://topic.csdn.net/u/20090321/17/fb43f873-83c0-4aaf-8d96-a528355d8bf4.html)
+
+2. [埃拉托斯特尼筛法](http://zh.wikipedia.org/zh-cn/%E5%9F%83%E6%8B%89%E6%89%98%E6%96%AF%E7%89%B9%E5%B0%BC%E7%AD%9B%E6%B3%95)
+
+3. [求百万级别的质数的几种算法](http://luren84.spaces.live.com/blog/cns!F92125191404692A!370.entry)
+
+EOF

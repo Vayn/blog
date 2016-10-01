@@ -1,0 +1,117 @@
+---
+layout: post
+title: '{Python} Django 中 ManyToMany 的关联方法'
+author: Vayn
+date: 2011-03-11
+categories:
+  - django
+  - python
+---
+
+
+什么是 ManyToMany？
+
+举个简单的例子，一本书可以有一个或多个作者，而一个作者可以写多本书，那么对于书和作者来说，他们的关系就不是一一对应的，而是多对多（也就是 ManyToMany）。在 Django 的 model 中，有个 ManyToManyField 专门来处理这种关系。
+
+我写了个小应用来的管理 blog 的文章，因此我设计了这样的 model：
+
+{% highlight python %}
+class Tag(models.Model):
+    name = models.CharField(max_length=30)
+
+class Entry(models.Model):
+    title = models.CharField(max_length=100)
+    pub_date = models.DateField(blank=True, null=True)
+    content = models.TextField()
+    tags = models.ManyToManyField(Tag)
+{% endhighlight %}
+
+Entry 和 Tag 分别代表了 blog 的两大组件——文章和分类。Tag 很简单，只用一个 name 字段来存放 tag 的名字。而 Entry 则用了 title, pub_date, content 这 3 个字段来存放文章的标题、发布时间和文章内容。那么 `tags = models.ManyToManyField(Tag)` 是干什么的？
+
+和之前的例子一样，一篇文章会有好几个 tag，而 tag 也下辖很多篇文章。从 Entry 的角度看，它有很多 tag(s)，于是通过 ManyToManyField 与 Tag 关联起来。打开数据库，你可以看到 Django 专门生成了名为 entry_tags 的表来保存文章与 tag 的对应关系。
+
+model 是搞定了，但实际中如何使用 model 往数据库里添加文章和 tag？ 可以用 Model 的 save 方法或者 [Manager](http://docs.djangoproject.com/en/dev/topics/db/managers/) 提供的 create 方法向数据库写入数据，因此可以这样添加 tag：
+
+{% highlight python %}
+t = Tag()
+t.name = '测试'
+t.save()
+
+# 或者
+Tag.objects.create(name='测试')
+{% endhighlight %}
+
+文章也是一样：
+
+{% highlight python %}
+e = Entry()
+e.title =  '测试'
+e.pub_date = '2010-03-11'
+e.content = 'test'
+e.save()
+{% endhighlight %}
+
+但这样只能分别添加 tag 和文章，而且文章与 tag 的对应关系没有添加进去。要想在添加文章的时候顺便把 tag 和对应关系也一并存放，我们需要重载 save 方法：
+
+{% highlight python %}
+class Entry(models.Model):
+    title = models.CharField(max_length=100)
+    pub_date = models.DateField(blank=True, null=True)
+    content = models.TextField()
+    tags = models.ManyToManyField(Tag)
+    taglist = []
+
+    def save(self, *args, **kwargs):
+        super(Entry, self).save()
+        for i in self.taglist:
+            p, created = Tag.objects.get_or_create(name=i)
+            self.tags.add(p)
+{% endhighlight %}
+
+在 Entry 的属性里多了个 taglist，它用来储存文章的 tag。之后使用 save 的时候，会先调用 Entry 父类的 save 方法将 title, pub_date, content 写入 entry 表，然后取出 taglist 中的每一个 tag，调用 Tag.objects.get_or_create 方法获得 Tag 对象，再用 [ManyToMany](http://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.ManyToManyField) 的 add 方法添加 Tag 对象<del>，最后二次调用 save 方法把数据真正存入数据库</del>。
+
+Manager 的 [get_or_create](http://docs.djangoproject.com/en/dev/ref/models/querysets/#get-or-create) 方法接受给定参数作为查询条件，如果找到结果就返回找到的对象，如果没找到就先创建对象再返回它，这样一来我们就不用担心会出现重复添加 tag 的问题了。
+
+能否在添加的文章的时候也使用 get_or_create 方法来防止重复添加呢，答案是当然可以。自定义一个 Manager 重载 get_or_create 即可。
+
+{% highlight python %}
+class EntryManager(models.Manager):
+    def get_or_create(self, **kwargs):
+        defaults = kwargs.pop('defaults', {})
+        taglist = defaults.pop('taglist', {})
+        Entry.taglist = taglist
+        kwargs.update(defaults)
+        super(EntryManager, self).get_or_create(**kwargs)
+
+class Entry(models.Model):
+    title = models.CharField(max_length=100)
+    pub_date = models.DateField(blank=True, null=True)
+    content = models.TextField()
+    tags = models.ManyToManyField(Tag)
+    taglist = []
+    objects = EntryManager()
+
+    def save(self, *args, **kwargs):
+        super(Entry, self).save()
+        for i in self.taglist:
+            p, created = Tag.objects.get_or_create(name=i)
+            self.tags.add(p)
+        self.taglist = []
+{% endhighlight %}
+
+因为 get_or_create 实际上还是会最终调用 model (Entry) 的 save 方法，所以才会用 `Entry.taglist = taglist` 在真正执行 get_or_create 之前先把 tag 放进去。
+
+最后就可以这样储存文章：
+
+{% highlight python %}
+title = '测试'
+data = {'taglist': tags,
+        'pub_date': date,
+        'content': output,
+       }
+Entry.objects.get_or_create(title=title, defaults=data)
+{% endhighlight %}
+
+以上代码均来自 Antidote（[https://github.com/Vayn/Antidote](https://github.com/Vayn/Antidote)），这是一个为方便用 jekyll 写 blog 的人管理文章的应用，欢迎 clone。
+
+EOF

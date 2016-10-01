@@ -1,0 +1,226 @@
+---
+layout: post
+title: '{Functional} 了解 Y combinator'
+author: Vayn
+date: 2011-07-17
+categories:
+  - math
+  - javascript
+  - ruby
+  - python
+  - functional
+  - translation
+---
+
+原文：[Deriving the Y combinator](http://blog.jcoglan.com/2008/01/10/deriving-the-y-combinator/)
+
+作者：James Coglan
+
+译者：Vayn a.k.a. VT &lt;vayn at vayn dot de&gt;
+
+在开始前：注意，我写这篇的主要动机是强迫自己理解自己所写的东西。如果你领悟到内容之外的什么，请把它当做额外奖励。我将用 JavaScript 实现 `Y()`，之后给出一个 Ruby 版的。
+
+去年我偶然发现了 [Raganwald 写的一篇文章](http://weblog.raganwald.com/2007/02/but-y-would-i-want-to-do-thing-like.html)（顺便说下，这个网站很有意思），然后开始就着迷于 Y combinator，同时我对自己完全不明白这个 Y combinator 是什么而感到沮丧。Y combinator 对我而言没什么实际用处，但是我因为自己的大脑不能理解这个东西而抓狂。本文就是试图治愈这种挫败感。你可以在阅读本文的同时，看看 [Wikipedia 上的这篇文章](http://en.wikipedia.org/wiki/Y_combinator)以及 Richard Gabriel 的 [The Why of Y](http://www.dreamsongs.com/NewFiles/WhyOfY.pdf)（PDF，例子是用 Scheme 写的），这两篇文章非常有用。我已经粗略地把 Raganwald 当时在文章里的链接和一些从 Google 上搜到的东西都加到了里面。
+
+我假设咱们都知道函数（function）就是接受输入数据（input value）然后返回输出数据（output value）。比方说，一个平方函数：
+
+<pre><code><strong>f</strong>(<em>x</em>) = <em>x<sup>2</sup></em></code></pre>
+
+写成 JavaScript：
+
+{% highlight javascript %}
+var square = function(x) {
+  return x * x;
+};
+{% endhighlight %}
+
+不动点（fixed point）是指函数的某种输入和函数本身相等，也就是 __f__(_x_) 等于 _x_ 。因此，f(x) = x<sup>2</sup> 的不动点是 0 和 1。
+
+在数学和其它任何支持第一级函数（first-class function，函数可作为数据被传递）的语言里，有一种函数被称为高阶函数（higher-order function）。这些函数接受其它函数作为输入，或输出一个函数，或者同时完成这两项。高阶函数 __f__ 的不动点是另一个函数 __p__，__f__(__p__) = __p__。（把它想成真正执行了的函数可能有助于理解。前面的语句等同于以 _x_ 为输入， __f__(_x_) = __p__(_x_)。）__Y__（Y combinator）是一个特殊的函数，它返回高阶函数的不动点，也就是：
+
+<pre><code><strong>f</strong>(<strong>Y</strong>(<strong>f</strong>)) = <strong>Y</strong>(<strong>f</strong>)</code></pre>
+
+__Y__ 一般用来在某个语言中实现匿名函数的递归，无论这种语言是否支持匿名函数递归。比方说，我想有计算一个数的阶乘的函数：
+
+{% highlight javascript %}
+var factorial = function(x) {
+  return x == 0 ? 1 : x * factorial(x-1);
+};
+{% endhighlight %}
+
+在继续之前先声明一下：JavaScript 支持匿名函数递归。所以，这个函数的正确写法是：
+
+{% highlight javascript %}
+var factorial = function(x) {
+  return x == 0 ? 1 : x * arguments.callee(x-1);
+};
+{% endhighlight %}
+
+`arguments.callee` 让我们可以从函数内部得到其自身的引用，这篇文章的内容就是假设语言不支持此功能的情况下要怎么办。
+
+上面的函数有个很大的问题（没使用 `arguments.callee` 的）：它依赖于我在函数外所给的函数的名字。如果我这么做：
+
+{% highlight javascript %}
+var bar = factorial;
+factorial = "something";
+bar(5); // -> does not work
+{% endhighlight %}
+
+我的 factorial 函数罢工了，因为 `factorial` 不再是它所期待的那样。我们将要做的是，创建一个函数，让它充当 factorial 函数的工厂（factory）：
+
+{% highlight javascript %}
+var f = function(q) {
+  return function(x) {
+    return x == 0 ? 1 ? x * q(x-1);
+  }
+};
+{% endhighlight %}
+
+f 函数将返回一个 factorial 函数。它递归地调用一个内部函数 q（定义在 f 内，不是全局的）。我们要把这个函数传递给 f 函数，让递归正常工作。那么，什么样的函数才是我们需要的？q 需要成为 factorial 函数并且作为内部函数正常执行。但是回到我们开始的地方：我们没法写出一个安全的 factorial 函数，因为我们不能使用匿名递归。
+
+但是，注意发生了什么：如果我们把 factorial 函数传递给 f，它将返回 factorial 函数。因此 factorial 函数就是 f 的不动点，那么就可以使用 Y combinator。不过我们怎样才能达到目的？
+
+首先，我们创造一个指向 `factorial` 的递归函数，把它自己作为一个参数传递进去：
+
+{% highlight javascript %}
+var factorial = function(h, x) {
+  return x == 0 ? 1 : x * h(h, x-1);
+}
+
+factorial(factorial, 5);  // -> 120
+{% endhighlight %}
+
+现在我们给 `factorial` 传递了一个函数，告诉它如何在不引用任何全局变量的情况下递归。不过这个接口不太令人满意——我想要能这样调用函数 `functionName(value)`。撒，让我们创造一个返回另一个函数的函数吧（这叫 _柯里化(currying)_ 我们的 `factorial` 函数）：
+
+{% highlight javascript %}
+var factorial = function(h) {
+  return function(x) {
+    return x == 0 ? 1 : x * h(h)(x-1);
+  };
+};
+
+factorial(factorial)(5);  // -> 120
+{% endhighlight %}
+
+这段代码不错，但有很多冗余和重复，并且函数定义里是 `h(h)(x)`，而不是上面那样的 `q(x)`。因此，我们创建另一个嵌套函数来生成 h(h) 的单独引用：
+
+{% highlight javascript %}
+var factorial = function(h) {
+  return function(x) {
+    var f = function(q, x) {
+      return x == 0 ? 1 : x * q(x-1);
+    };
+    return f(h(h), x);
+  };
+};
+
+factorial(factorial)(5);  // -> 120
+{% endhighlight %}
+
+这段代码看上去很像之前 f 函数的形式。我们只需柯里化（curry）最里面的函数，就能完成转换：
+
+{% highlight javascript %}
+var factorial = function(h) {
+  return function(x) {
+    var f = function(q) {
+      return function(x) {
+        return x == 0 ? 1 : x * q(x-1);
+      };
+    };
+    return f(h(h))(x);
+  };
+};
+
+factorial(factorial)(5);  // -> 120
+{% endhighlight %}
+
+现在内部函数 f 不再包含任何外部变量的引用，所以把 f 单独抽出后它仍将正常执行：
+
+{% highlight javascript %}
+var f = function(q) {
+  return function(x) {
+    return x == 0 ? 1 : x * q(x-1);
+  };
+};
+
+var factorial = function(h) {
+  return function(x) {
+    return f(h(h))(x);
+  };
+};
+
+factorial(factorial)(5);  // -> 120
+{% endhighlight %}
+
+于是我们就得到了原始的 f，也就是我们想要的不动点。这里，不动点是由 `factorial(factorial)` 得到的 factorial 函数，因此我们可以写一个 Y() 函数来得它：
+
+{% highlight javascript %}
+var Y = function(f) {
+  var g = function(h) {
+    return function(x) {
+      return f(h(h))(x);
+    };
+  };
+  return g(g);
+};
+{% endhighlight %}
+
+更为常规点儿的写法：
+
+{% highlight javascript %}
+var Y = function(f) {
+  return (function(g){
+    return g(g);
+  })(function(h) {
+    return function() {
+      return f(h(h)).apply(null, arguments);
+    };
+  });
+};
+{% endhighlight %}
+
+`Y()` 将返回任何高阶函数的不动点，也就是我们想要的：
+
+{% highlight javascript %}
+var factorial = Y(function(recurse) {
+  return function(x) {
+    return x == 0 ? 1 : x * recurse(x-1);
+  };
+});
+
+factorial(5); // -> 120
+{% endhighlight %}
+
+而且和变戏法一样——我们实现了匿名函数递归，不依赖全局变量或宿主语言的支持。如果你想在 Ruby 中这么做（我不清楚 Ruby 里有没有类似 `arguments.callee` 的方法），它会是这样的：
+
+{% highlight ruby %}
+def y(&f)
+  lambda { |g| g[g] } [
+    lambda do |h|
+      lambda { |*args| f[h[h]][*args] }
+    end
+  ]
+end
+
+factorial = y do |recurse|
+  lambda do |x|
+    x.zero? ? 1 : x * recurse[x-1]
+  end
+end
+{% endhighlight %}
+
+有关于 __Y__ 的最让人沮丧是，当你推导出它后，完全没法儿通过只看它一眼就说出它到底是想干吗。如果你读到了这里，恭喜你。
+
+（译文完）
+
+我补充个 Python 版的 Y combinator：
+
+{% highlight python %}
+Y = lambda f: (lambda g: g(g))(lambda h: lambda x: f(h(h))(x))
+
+factorial = Y(lambda recurse: lambda x: 1 if 0 == x else x * recurse(x-1))
+
+factorial(5) # 120
+{% endhighlight %}
+
+EOF

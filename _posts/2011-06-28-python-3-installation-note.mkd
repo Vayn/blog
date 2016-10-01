@@ -1,0 +1,91 @@
+---
+layout: post
+title: '{Python} Python 3 安装手记'
+author: Vayn
+date: 2011-06-28
+categories:
+  - python
+  - DIY
+---
+
+长久以来偶一直徘徊在 Python 2 的世界里，但介于某人的长期感召，偶终于决定尝试 [Python 3](http://www.python.org/download/releases/3.0/). 具体点说，就是在 Python 3.2 中运行 [Greenlet](http://pypi.python.org/pypi/greenlet)……
+
+偶本以为会很轻松的完成任务，没想到在运行程序的时候竟然出现这样的提示——
+
+`xxx undefined symbol: PyCObject_FromVoidPtr`
+
+这是怎么回事？放狗一搜，找到最靠谱的一条贴子是 [Python 3.1.1 with --enable-shared : will not build any extensions](http://stackoverflow.com/questions/1547310/python-3-1-1-with-enable-shared-will-not-build-any-extensions)，大致浏览一番后得出结论，应该和机器上的 Python 3 有关。也许是 Ubuntu 仓库里编译的 Python 3 有问题？
+
+实际上最后只能说仓库里的 Python 3.2 有可能有问题，但这和 Greenlet 不能运行基本没关系……原因后面会说到。
+
+那么就开始编译 Python 3.2 吧，先把从仓库里安装的 Python 3.2 删掉，从网站下载最新源码进行 make 标准流程，一切都很顺畅。不对，make 时好像闪过什么提示？忽略之。
+
+接着进入 Greenlet 的目录，输入`python3 setup install`，然后跳出一行
+
+`libpython3.2m.so.1.0: cannot open shared object file: No such file or directory`
+
+才编译好的 Python 怎么可能没有 `libpython3.2m.so.1.0`？在别的地方找了找，果然找到 `libpython3.2m.so.1.0`，于是把它链接到 `/usr/lib` 里。
+
+再次执行之前的命令，刷刷出现几行消息后安装过程突然顿住，`Import Error: No module named setuptools` 进入视线。看来 Python 3.2 没有 setuptools 组件，到 PyPi上翻了翻，发现 setuptools 没开发 Python 3 版……怎么办？只好继续放狗了.
+
+幸好狗儿强大，很快就找到 [distribute](http://pypi.python.org/pypi/distribute) 这个支持 Python 3 的 setuptools fork。没啥好说的，下吧。解压缩、执行安装命令，然后……又出错了……
+
+这回轮到 `ImportError: No module named zlib` 登场，要知道没 zlib 组件连 gzip 都别想用。没装 zlib 的开发库？zlib1g-dev 是最新版的。看来仓库又靠不住，还得自己动手丰衣足食。
+
+从 [zlib](http://www.zlib.net/) 的官网下载最新版的 zlib 源码，选择以 shared library 的方式编译 zlib：
+
+`./configure --prefix=/usr --shared`
+
+把 so 都放到安全的地方再链接回来：
+
+`mv /usr/lib/libz.so.* /lib`
+
+`ln -sf /lib/libz.so.1 /usr/lib/libz.so`
+
+接下来，因为之前手太快，又得再下一次 Python 3.2 的源码……解压，编译：
+
+`./configure --enable-shared --with-wide-unicode --prefix=/usr/local`
+
+`make`
+
+这次注意到 make 最后出现的错误提示：
+
+<pre><code>Failed to build these modules:
+crypt              nis</code></pre>
+
+Hmm，两个加密组件编译失败……搜索过程略过，最后在 [Python.org](http://python.org) 上找到 [Issue9762](http://bugs.python.org/issue9762)，虽然问题报的版本是 Python 2.6，但是错误一模一样，仔细看完发现要打补丁解决这个问题。补丁在哪里？翻呀翻，又翻到了 [Issue11715](http://bugs.python.org/issue11715)，不仅问题对上，连 Python 版本也能对上。
+
+原来这个错误是在 Debian/Ubuntu 上安装 Python 才会出现的问题，导致问题出现的元凶是 Debian 的 [Multiarch](http://wiki.debian.org/Multiarch/) 机制。什么是 Multiarch，Debian Wiki 上给的解释是：
+
+> Multiarch is the term being used to refer to the capability of a system to install and run applications of multiple different binary targets on the same system. For example running a i386-linux-gnu application on an amd64-linux-gnu system. 
+
+简单来说就是让不同架构下编译的二进制文件能在同一个系统里运行。那为什么会让编译出错？因为路径改了之后 setup.py 就找不到编译时需要的库文件了……
+
+解决方法也很明了，把 multiarch 的路径加进 setup.py 的搜索路径里就行了，补丁在 Python 的 hg 仓库里：[changeset 69188:bd0f73a9538e 2.7](http://hg.python.org/cpython/rev/bd0f73a9538e)
+
+打上补丁再来编译 Python 3.2，我勒个去，又有新情况……这次是 `_gdbm` 没装上，没啥
+好说：
+
+`sudo apt-get install libgdbm-dev`
+
+解决掉它。
+
+多次编译之后你会发现这个过程也挺无趣的，写个脚本来自动化一下吧……重新安装distribute，毫不费力。接下来回到最后也是最初的目标——安装并运行 Greenlet。安装，没有悬念的完成了。
+
+最后运行 Greenlet 程序，程序开始执行，终端输出一行——
+
+`xxx undefined symbol: PyCObject_FromVoidPtr`
+
+我圈圈个叉叉，这不是最开始的错误吗！
+
+无奈之下再次放狗，这回总算得知 Python 3.2 已经不再使用 PyCObject 了，所以呢这不是 Python 的问题，而是 Greenlet 的问题……没错，折腾了一圈才发现白折腾了。
+
+找到问题就好说了，直接去 Greenlet 的仓库找[issue](https://bitbucket.org/ambroff/greenlet/issue/15/greenlet-doesnt-support-python-32)找补丁。补上之后再编译安装，整个世界都清静了……啊对了，补丁在这里：[https://bitbucket.org/snaury/greenlet/changeset/f61fffb6feeb](https://bitbucket.org/snaury/greenlet/changeset/f61fffb6feeb)
+
+至于最后的最后，成功地跑 Greenlet 程序已经没什么好说的了……
+
+我把整个过程都回顾一遍，一是自娱自乐，二是发现这方面的关于安装编译 Python 3的中文资料不多，希望能帮到大家的忙。
+
+Update: 经[依云](http://lilydjwg.is-programmer.com)提醒，给 Python 的编译参数加上了 --with-wide-unicode，如果想增加（或减少）特性，可使用 `./configure --help`或 Arch 的 PKGBUILD 来查阅特性。
+
+EOF

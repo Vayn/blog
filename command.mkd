@@ -1,0 +1,43 @@
+---
+layout: default
+title: Command
+---
+
+__VIM__
+
+[c9s: Auto-Completion](http://c9s.me/vim-zh/html/Auto-Completion.html)
+
+---
+
+__LINUX__
+
+统计文件行数:
+
+`find path -name "*.format" -print | xargs wc -l`
+
+干掉进程: [pidof](http://en.wikipedia.org/wiki/Pidof)
+
+`` kill `pidof NAME` ``
+
+修改 Ubuntu 鼠标指针，可以连开机时的指针一起修改:
+
+`sudo -u gdm gconftool-2 --set /desktop/gnome/peripherals/mouse/cursor_size --type int 28`
+
+`sudo -u gdm gconftool-2 --set /desktop/gnome/peripherals/mouse/cursor_theme --type string "Cursor Name"`
+
+在命令行中以文本形式播放视频:
+
+`mplayer -vo caca filename`
+
+编译 VIM：
+
+`./configure --with-features=huge --enable-gnome-check --enable-xim --enable-pythoninterp=yes --enable-gui --enable-cscope --enable-fontset --enable-perlinterp --enable-rubyinterp --enable-multibyte --with-x --with-python-config-dir=/usr/lib/python2.6/config --prefix=/usr/local/share`
+
+`make VIMRCLOC=/etc/ VIMRUNTIMEDIR=/usr/local/vim/vim73 MAKE="make -e"`
+
+设置缺省编辑器：
+
+`sudo update-alternatives --install /usr/bin/editor editor /usr/local/bin/vim 50 --slave /usr/share/man/man1/editor.1.gz editor.1.gz /usr/local/man/man1/vim.1.gz`
+
+`sudo update-alternatives --install /usr/bin/vi vi /usr/local/bin/vim 50 --slave /usr/share/man/man1/vi.1.gz vi.1.gz /usr/local/man/man1/vim.1.gz `
+
